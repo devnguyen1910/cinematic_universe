@@ -1,0 +1,5 @@
+{
+  "name": "Cinematic Universe - Movie Ticket Booking",
+  "description": "A modern and sleek web application for browsing movies and booking tickets, inspired by CGV. It features real-time seat selection, movie details, and an AI-powered synopsis generator.",
+  "requestFramePermissions": []
+}
