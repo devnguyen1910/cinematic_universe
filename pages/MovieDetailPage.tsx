@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// FIX: Corrected import for react-router-dom components.
 import { useParams, Link } from 'react-router-dom';
 import { cinemas, showtimes } from '../data/mockData';
 import { useBooking } from '../contexts/BookingContext';
@@ -6,6 +7,8 @@ import { generateSynopsis } from '../services/geminiService';
 import { getMovieDetails, getMovieVideos, getImageUrl } from '../services/tmdbService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Movie, Showtime } from '../types';
+import * as ratingService from '../services/ratingService';
+import StarRating from '../components/StarRating';
 
 const MovieDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +19,11 @@ const MovieDetailPage: React.FC = () => {
 
   const [aiSynopsis, setAiSynopsis] = useState('');
   const [isLoadingSynopsis, setIsLoadingSynopsis] = useState(false);
+  
+  const [userRatingInfo, setUserRatingInfo] = useState<{ average: number; count: number } | null>(null);
+  const [currentUserRating, setCurrentUserRating] = useState<number>(0);
+  const [hasRated, setHasRated] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -24,7 +32,7 @@ const MovieDetailPage: React.FC = () => {
         return;
       }
       setLoading(true);
-      const movieId = parseInt(id);
+      const movieId = parseInt(id, 10);
       const [movieData, videosData] = await Promise.all([
         getMovieDetails(movieId),
         getMovieVideos(movieId)
@@ -33,10 +41,21 @@ const MovieDetailPage: React.FC = () => {
       setMovie(movieData);
 
       if (videosData && videosData.length > 0) {
-        // Prioritize official trailers, but fall back to any trailer
         const officialTrailer = videosData.find(video => video.type === 'Trailer' && video.site === 'YouTube' && video.official);
         const anyTrailer = videosData.find(video => video.type === 'Trailer' && video.site === 'YouTube');
         setTrailerKey(officialTrailer?.key || anyTrailer?.key || null);
+      }
+      
+      // Fetch user rating data
+      const ratingData = ratingService.getRatingForMovie(movieId);
+      setUserRatingInfo(ratingData);
+      const userHasRated = ratingService.hasUserRated(movieId);
+      setHasRated(userHasRated);
+      if (userHasRated) {
+        const userVote = ratingService.getUserRatingForMovie(movieId);
+        if (userVote) {
+          setCurrentUserRating(userVote);
+        }
       }
 
       setLoading(false);
@@ -51,6 +70,24 @@ const MovieDetailPage: React.FC = () => {
     const generated = await generateSynopsis(movie.title);
     setAiSynopsis(generated);
     setIsLoadingSynopsis(false);
+  };
+  
+  const handleRatingSubmit = async (rating: number) => {
+    if (!movie || hasRated || isSubmitting) return;
+    setIsSubmitting(true);
+    // Simulate async operation for better UX
+    await new Promise(res => setTimeout(res, 500));
+    
+    ratingService.submitRating(movie.id, rating);
+    
+    setCurrentUserRating(rating);
+    setHasRated(true);
+
+    // Refetch rating info to update the average and count
+    const newRatingData = ratingService.getRatingForMovie(movie.id);
+    setUserRatingInfo(newRatingData);
+    
+    setIsSubmitting(false);
   };
   
   if (loading) {
@@ -91,6 +128,36 @@ const MovieDetailPage: React.FC = () => {
             <span>{movie.genres?.map(g => g.name).join(', ')}</span>
           </div>
           <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
+
+          <div className="border-t border-b border-gray-700 py-6 my-6">
+            <h3 className="font-semibold text-lg mb-4">User Ratings</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-8">
+                <div className="mb-4 sm:mb-0">
+                    {userRatingInfo ? (
+                        <div className="flex items-center gap-2">
+                            <span className="text-4xl font-bold text-yellow-400">{userRatingInfo.average.toFixed(1)}</span>
+                            <div className="text-gray-400">
+                                <p>out of 10</p>
+                                <p className="text-sm">{userRatingInfo.count.toLocaleString()} votes</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <p className="text-gray-400">No user ratings yet.</p>
+                    )}
+                </div>
+                <div className="flex-grow">
+                    <h4 className="font-semibold mb-2">{hasRated ? 'You rated:' : 'Rate this movie:'}</h4>
+                    <StarRating 
+                        rating={currentUserRating}
+                        onRatingChange={handleRatingSubmit}
+                        disabled={hasRated || isSubmitting}
+                        size={40}
+                    />
+                    {isSubmitting && <p className="text-sm text-yellow-400 mt-2">Submitting your rating...</p>}
+                    {hasRated && !isSubmitting && <p className="text-sm text-green-400 mt-2">Thank you for rating!</p>}
+                </div>
+            </div>
+          </div>
           
           <div className="border-t border-gray-700 pt-4">
             <h3 className="font-semibold text-lg mb-2">Release Date</h3>

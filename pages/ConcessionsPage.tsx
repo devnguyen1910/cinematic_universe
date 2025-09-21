@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// FIX: Corrected import for react-router-dom components.
 import { useNavigate } from 'react-router-dom';
 import { useBooking } from '../contexts/BookingContext';
 import { mockConcessions } from '../data/mockData';
@@ -64,7 +65,7 @@ const ConcessionsPage: React.FC = () => {
     return null;
   }
   
-  const seatsPrice = booking.totalPrice - (booking.concessions.reduce((acc, item) => acc + item.concession.price * item.quantity, 0));
+  const ticketsPrice = booking.totalPrice - (booking.concessions.reduce((acc, item) => acc + item.concession.price * item.quantity, 0));
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
@@ -99,15 +100,10 @@ const ConcessionsPage: React.FC = () => {
           <div className="border-t border-gray-600 pt-4">
             <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
             <div className="flex justify-between text-sm">
-                <span>{booking.seats.length} Seat(s)</span>
-                <span>{seatsPrice.toLocaleString('vi-VN')} VND</span>
+                <span>{booking.ticketQuantity} Ticket(s)</span>
+                <span>{ticketsPrice.toLocaleString('vi-VN')} VND</span>
             </div>
-             <div className="flex flex-wrap gap-2 my-2">
-                {booking.seats.map(seat => (
-                  <span key={seat.id} className="bg-gray-700 text-white text-xs font-bold px-2 py-1 rounded-full">{seat.id}</span>
-                ))}
-            </div>
-
+            
             {booking.concessions.length > 0 && (
                 <>
                 <h3 className="font-semibold text-lg mb-2 mt-4">Concessions</h3>

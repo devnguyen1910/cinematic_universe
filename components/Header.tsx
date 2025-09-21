@@ -1,5 +1,7 @@
 
+
 import React, { useState } from 'react';
+// FIX: Corrected import for react-router-dom components.
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {

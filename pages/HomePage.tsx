@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// FIX: Corrected import for react-router-dom components.
 import { Link } from 'react-router-dom';
 import { getNowPlayingMovies, getUpcomingMovies, getImageUrl } from '../services/tmdbService';
 import MovieCard from '../components/MovieCard';

@@ -68,7 +68,7 @@ export interface Booking {
   movie: Movie | null;
   cinema: Cinema | null;
   showtime: Showtime | null;
-  seats: Seat[];
+  ticketQuantity: number;
   concessions: SelectedConcession[];
   totalPrice: number;
 }

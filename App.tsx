@@ -1,4 +1,5 @@
 import React from 'react';
+// FIX: Corrected import for react-router-dom components.
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { BookingProvider } from './contexts/BookingContext';
 import Header from './components/Header';

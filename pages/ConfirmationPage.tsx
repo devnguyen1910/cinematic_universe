@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+// FIX: Corrected import for react-router-dom components.
 import { useNavigate } from 'react-router-dom';
 import { useBooking } from '../contexts/BookingContext';
 
@@ -22,7 +23,7 @@ const ConfirmationPage: React.FC = () => {
     return null;
   }
 
-  const { movie, cinema, showtime, seats, concessions, totalPrice } = booking;
+  const { movie, cinema, showtime, ticketQuantity, concessions, totalPrice } = booking;
 
   return (
     <div className="max-w-3xl mx-auto bg-brand-gray/50 p-8 rounded-lg text-center shadow-lg">
@@ -44,10 +45,8 @@ const ConfirmationPage: React.FC = () => {
             <p>{showtime.date} at {showtime.time}</p>
           </div>
           <div>
-            <p className="font-semibold text-gray-400">Seats</p>
-            <p className="flex flex-wrap gap-2">
-              {seats.map(s => <span key={s.id} className="font-mono bg-gray-700 px-2 py-1 rounded text-sm">{s.id}</span>)}
-            </p>
+            <p className="font-semibold text-gray-400">Tickets</p>
+            <p className="font-bold text-lg">{ticketQuantity}</p>
           </div>
         </div>
 
@@ -72,7 +71,7 @@ const ConfirmationPage: React.FC = () => {
       </div>
       
       <div className="flex justify-center mb-8">
-         <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=showtime-${showtime.id}-seats-${seats.map(s=>s.id).join(',')}`} alt="QR Code" className="bg-white p-2 rounded-lg" />
+         <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=showtime-${showtime.id}-tickets-${ticketQuantity}`} alt="QR Code" className="bg-white p-2 rounded-lg" />
       </div>
 
       <button

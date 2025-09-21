@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI } from "@google/genai";
 
 const API_KEY = process.env.API_KEY;
@@ -9,10 +10,12 @@ if (!API_KEY) {
   console.warn("API_KEY environment variable not set. AI features will be disabled.");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
+// FIX: Conditionally initialize GoogleGenAI only if the API_KEY exists to prevent runtime errors.
+const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 export const generateSynopsis = async (movieTitle: string): Promise<string> => {
-  if (!API_KEY) {
+  // FIX: Check if the 'ai' instance was successfully initialized.
+  if (!ai) {
     return "AI synopsis generation is currently unavailable. Please check your API key configuration.";
   }
   

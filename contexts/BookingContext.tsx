@@ -5,7 +5,7 @@ import { Booking, Movie, Cinema, Showtime, Seat, SelectedConcession, SeatStatus 
 interface BookingContextType {
   booking: Booking;
   startBooking: (movie: Movie, cinema: Cinema, showtime: Showtime) => void;
-  updateSeats: (seats: Seat[], seatsPrice: number) => void;
+  updateTicketQuantity: (quantity: number) => void;
   updateConcessions: (concessions: SelectedConcession[], concessionsPrice: number) => void;
   clearBooking: () => void;
 }
@@ -16,10 +16,13 @@ const initialState: Booking = {
   movie: null,
   cinema: null,
   showtime: null,
-  seats: [],
+  ticketQuantity: 0,
   concessions: [],
   totalPrice: 0,
 };
+
+// In a real app, this might come from an API based on showtime, format, etc.
+export const STANDARD_TICKET_PRICE = 75000;
 
 export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [booking, setBooking] = useState<Booking>(initialState);
@@ -30,20 +33,23 @@ export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children })
       movie,
       cinema,
       showtime,
+      ticketQuantity: 1, // Start with 1 ticket selected
+      totalPrice: STANDARD_TICKET_PRICE,
     });
   };
 
-  const updateSeats = (seats: Seat[], seatsPrice: number) => {
+  const updateTicketQuantity = (quantity: number) => {
     setBooking(prev => {
+      const ticketsPrice = quantity * STANDARD_TICKET_PRICE;
       const concessionsPrice = prev.concessions.reduce((total, item) => total + item.concession.price * item.quantity, 0);
-      return { ...prev, seats, totalPrice: seatsPrice + concessionsPrice };
+      return { ...prev, ticketQuantity: quantity, totalPrice: ticketsPrice + concessionsPrice };
     });
   };
   
   const updateConcessions = (concessions: SelectedConcession[], concessionsPrice: number) => {
     setBooking(prev => {
-      const seatsPrice = prev.seats.reduce((total, seat) => total + (TICKET_PRICES[seat.status] || 0), 0);
-      return { ...prev, concessions, totalPrice: seatsPrice + concessionsPrice };
+      const ticketsPrice = prev.ticketQuantity * STANDARD_TICKET_PRICE;
+      return { ...prev, concessions, totalPrice: ticketsPrice + concessionsPrice };
     });
   };
   
@@ -52,7 +58,7 @@ export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   return (
-    <BookingContext.Provider value={{ booking, startBooking, updateSeats, updateConcessions, clearBooking }}>
+    <BookingContext.Provider value={{ booking, startBooking, updateTicketQuantity, updateConcessions, clearBooking }}>
       {children}
     </BookingContext.Provider>
   );
@@ -66,8 +72,7 @@ export const useBooking = (): BookingContextType => {
   return context;
 };
 
-// This needs to be accessible by both BookingPage and BookingContext, so defining it here.
-// In a real app, this might come from an API.
+// This is kept for the SeatMap component, which is not part of the main booking flow anymore but could be reused.
 export const TICKET_PRICES = {
   [SeatStatus.Available]: 75000,
   [SeatStatus.VIP]: 110000,
