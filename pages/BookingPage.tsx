@@ -70,51 +70,52 @@ const BookingPage: React.FC = () => {
               </div>
             </div>
         
-        <div className="p-4 bg-black rounded-lg text-center">
-            <h3 className="text-xl font-semibold mb-4 text-white">How many tickets?</h3>
-            <div className="flex items-center justify-center gap-4 my-8">
-                <button 
-                    onClick={() => handleQuantityChange(booking.ticketQuantity - 1)} 
-                    className="w-16 h-16 text-4xl font-bold rounded-full bg-gray-700 hover:bg-gray-600 transition-colors disabled:opacity-50"
-                    disabled={booking.ticketQuantity <= 1}
-                    aria-label="Decrease ticket quantity"
-                >
-                    -
-                </button>
-                <span className="text-5xl font-bold w-24 text-center" aria-live="polite">{booking.ticketQuantity}</span>
-                <button 
-                    onClick={() => handleQuantityChange(booking.ticketQuantity + 1)} 
-                    className="w-16 h-16 text-4xl font-bold rounded-full bg-brand-red hover:bg-red-700 transition-colors"
-                    aria-label="Increase ticket quantity"
-                >
-                    +
-                </button>
+            <div className="p-4 bg-black rounded-lg text-center">
+                <h3 className="text-xl font-semibold mb-4 text-white">How many tickets?</h3>
+                <div className="flex items-center justify-center gap-4 my-8">
+                    <button 
+                        onClick={() => handleQuantityChange(booking.ticketQuantity - 1)} 
+                        className="w-16 h-16 text-4xl font-bold rounded-full bg-gray-700 hover:bg-gray-600 transition-colors disabled:opacity-50"
+                        disabled={booking.ticketQuantity <= 1}
+                        aria-label="Decrease ticket quantity"
+                    >
+                        -
+                    </button>
+                    <span className="text-5xl font-bold w-24 text-center" aria-live="polite">{booking.ticketQuantity}</span>
+                    <button 
+                        onClick={() => handleQuantityChange(booking.ticketQuantity + 1)} 
+                        className="w-16 h-16 text-4xl font-bold rounded-full bg-brand-red hover:bg-red-700 transition-colors"
+                        aria-label="Increase ticket quantity"
+                    >
+                        +
+                    </button>
+                </div>
+                <p className="text-gray-400">Standard price: {STANDARD_TICKET_PRICE.toLocaleString('vi-VN')} VND per ticket</p>
             </div>
-             <p className="text-gray-400">Standard price: {STANDARD_TICKET_PRICE.toLocaleString('vi-VN')} VND per ticket</p>
-        </div>
-
-      </div>
-      <div className="lg:w-1/3">
-        <div className="bg-brand-gray/50 p-6 rounded-lg sticky top-24">
-          <h2 className="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">Booking Summary</h2>
-          <div className="space-y-2 mb-4">
-            <p><span className="font-semibold">Movie:</span> {booking.movie.title}</p>
-            <p><span className="font-semibold">Cinema:</span> {booking.cinema.name}</p>
-            <p><span className="font-semibold">Showtime:</span> {booking.showtime.time} - {booking.showtime.format}</p>
           </div>
-          <div className="border-t border-gray-600 pt-4">
-            <h3 className="font-semibold text-lg mb-2">Tickets ({booking.ticketQuantity})</h3>
-            
-            <div className="text-2xl font-bold mt-4">
-              Ticket Total: {ticketTotal.toLocaleString('vi-VN')} VND
+          <div className="lg:w-1/3">
+            <div className="bg-brand-gray/50 p-6 rounded-lg sticky top-24">
+              <h2 className="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">Booking Summary</h2>
+              <div className="space-y-2 mb-4">
+                <p><span className="font-semibold">Movie:</span> {booking.movie.title}</p>
+                <p><span className="font-semibold">Cinema:</span> {booking.cinema.name}</p>
+                <p><span className="font-semibold">Showtime:</span> {booking.showtime.time} - {booking.showtime.format}</p>
+              </div>
+              <div className="border-t border-gray-600 pt-4">
+                <h3 className="font-semibold text-lg mb-2">Tickets ({booking.ticketQuantity})</h3>
+                
+                <div className="text-2xl font-bold mt-4">
+                  Ticket Total: {ticketTotal.toLocaleString('vi-VN')} VND
+                </div>
+                <button
+                  onClick={handleConfirm}
+                  disabled={booking.ticketQuantity === 0}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md mt-6 transition-colors duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed"
+                >
+                  Chọn Đồ Ăn & Thức Uống
+                </button>
+              </div>
             </div>
-            <button
-              onClick={handleConfirm}
-              disabled={booking.ticketQuantity === 0}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md mt-6 transition-colors duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed"
-            >
-              Chọn Đồ Ăn & Thức Uống
-            </button>
           </div>
         </div>
       </div>

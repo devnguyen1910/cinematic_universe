@@ -151,8 +151,7 @@ const MovieDetailPage: React.FC = () => {
                     <StarRating 
                         rating={currentUserRating}
                         onRatingChange={handleRatingSubmit}
-                        disabled={hasRated || isSubmitting}
-                        size={40}
+                        size="lg"
                     />
                     {isSubmitting && <p className="text-sm text-yellow-400 mt-2">Submitting your rating...</p>}
                     {hasRated && !isSubmitting && <p className="text-sm text-green-400 mt-2">Thank you for rating!</p>}
