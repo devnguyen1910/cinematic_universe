@@ -6,6 +6,7 @@ import { useBooking } from '../contexts/BookingContext';
 import { generateSynopsis } from '../services/geminiService';
 import { getMovieDetails, getMovieVideos, getImageUrl } from '../services/tmdbService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ReviewSection from '../components/ReviewSection';
 import { Movie, Showtime } from '../types';
 import * as ratingService from '../services/ratingService';
 import StarRating from '../components/StarRating';
@@ -231,6 +232,9 @@ const MovieDetailPage: React.FC = () => {
           <p className="text-gray-400">No showtimes available for this movie yet.</p>
         )}
       </div>
+
+      {/* Reviews Section */}
+      <ReviewSection movieId={movie.id} movieTitle={movie.title} />
     </div>
   );
 };

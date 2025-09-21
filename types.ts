@@ -85,3 +85,29 @@ export interface MovieVideo {
   published_at: string;
   id: string;
 }
+
+export interface Review {
+  id: string;
+  movieId: number;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface WishlistItem {
+  movie: Movie;
+  addedAt: string;
+}
+
+export interface Theme {
+  mode: 'light' | 'dark';
+}
+
+export interface Notification {
+  id: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+  message: string;
+  duration?: number;
+}

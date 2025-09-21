@@ -1,7 +1,16 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Seat, SeatStatus } from '../types';
-import { TICKET_PRICES } from '../contexts/BookingContext';
+import { STANDARD_TICKET_PRICE } from '../contexts/BookingContext';
+
+// Ticket prices for different seat types
+const TICKET_PRICES = {
+  [SeatStatus.Available]: STANDARD_TICKET_PRICE,
+  [SeatStatus.VIP]: STANDARD_TICKET_PRICE * 1.5,
+  [SeatStatus.Couple]: STANDARD_TICKET_PRICE * 2,
+  [SeatStatus.Occupied]: 0,
+  [SeatStatus.Selected]: STANDARD_TICKET_PRICE,
+};
 
 interface SeatMapProps {
   occupiedSeats: string[];

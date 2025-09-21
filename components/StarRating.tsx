@@ -3,38 +3,43 @@ import React, { useState } from 'react';
 interface StarRatingProps {
   count?: number; // Number of stars
   rating: number; // Current rating value (0-10)
-  onRatingChange: (rating: number) => void;
-  disabled?: boolean;
-  size?: number; // Size of the star icon
+  onRatingChange?: (rating: number) => void;
+  readOnly?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const StarRating: React.FC<StarRatingProps> = ({
   count = 5,
   rating,
   onRatingChange,
-  disabled = false,
-  size = 32,
+  readOnly = false,
+  size = 'md',
 }) => {
   const [hover, setHover] = useState(0);
 
   const stars = Array.from({ length: count }, (_, i) => i + 1);
-
   const starValue = rating / 2; // Convert 10-point scale to 5-star scale
 
+  const sizeClasses = {
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
+    lg: 'w-8 h-8'
+  };
+
   const handleClick = (value: number) => {
-    if (!disabled) {
+    if (!readOnly && onRatingChange) {
       onRatingChange(value * 2); // Convert back to 10-point scale
     }
   };
 
   const handleMouseEnter = (value: number) => {
-    if (!disabled) {
+    if (!readOnly) {
       setHover(value);
     }
   };
 
   const handleMouseLeave = () => {
-    if (!disabled) {
+    if (!readOnly) {
       setHover(0);
     }
   };
@@ -44,15 +49,13 @@ const StarRating: React.FC<StarRatingProps> = ({
       {stars.map((star) => (
         <svg
           key={star}
-          className={`cursor-pointer transition-colors duration-200 ${
+          className={`${sizeClasses[size]} transition-colors duration-200 ${
             (hover || starValue) >= star
               ? 'text-yellow-400'
-              : 'text-gray-600'
-          } ${!disabled ? 'hover:text-yellow-300' : 'cursor-default'}`}
+              : 'text-gray-400 dark:text-gray-600'
+          } ${!readOnly ? 'cursor-pointer hover:text-yellow-300' : 'cursor-default'}`}
           fill="currentColor"
           viewBox="0 0 20 20"
-          width={size}
-          height={size}
           onClick={() => handleClick(star)}
           onMouseEnter={() => handleMouseEnter(star)}
         >
